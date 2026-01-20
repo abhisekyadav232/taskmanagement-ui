@@ -145,6 +145,27 @@ export default function AdminPage() {
     const matchDeadline = filterDeadline ? t.deadline?.slice(0, 10) === filterDeadline : true
     return matchStatus && matchPriority && matchDeadline
   })
+  const statusStyle = status => {
+  switch (status) {
+    case 'Completed':
+      return 'bg-green-100 text-green-700'
+    case 'In Progress':
+      return 'bg-blue-100 text-blue-700'
+    default:
+      return 'bg-yellow-100 text-yellow-700'
+  }
+}
+
+const priorityStyle = priority => {
+  switch (priority) {
+    case 'High':
+      return 'bg-red-100 text-red-700'
+    case 'Medium':
+      return 'bg-orange-100 text-orange-700'
+    default:
+      return 'bg-gray-200 text-gray-700'
+  }
+}
 
   const filteredUsers = users.filter(u => {
     const matchRole = filterRole ? u.role === filterRole : true
@@ -206,10 +227,33 @@ export default function AdminPage() {
               </div>
             )}
 
-            <h3 className="font-bold">{task.title}</h3>
-            <p>{task.description}</p>
-            <p className="text-sm text-gray-500">Assigned: {getUserName(task.assignedToUserId)}</p>
-            <p className="text-sm text-gray-500">Deadline: {task.deadline?.slice(0, 10)}</p>
+            <h3 className="text-lg font-bold">{task.title}</h3>
+            <p className="text-gray-600 mb-2">{task.description}</p>
+
+            <p className="text-sm text-gray-500 mb-1">
+              Assigned: <b>{getUserName(task.assignedToUserId)}</b>
+            </p>
+
+            <p className="text-sm text-gray-500 mb-3">
+              Deadline:{' '}
+              <b>
+                {task.deadline
+                  ? new Date(task.deadline).toLocaleDateString()
+                  : 'No deadline'}
+              </b>
+            </p>
+
+            <div className="flex gap-2">
+              <span className={`px-2 py-1 text-sm rounded ${statusStyle(task.status)}`}>
+                {task.status}
+              </span>
+
+              <span className={`px-2 py-1 text-sm rounded ${priorityStyle(task.priority)}`}>
+                {task.priority}
+              </span>
+            </div>
+
+            
           </div>
         ))}
       </div>
